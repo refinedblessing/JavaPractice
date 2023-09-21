@@ -66,7 +66,10 @@ public class Forloops {
         int second = input.nextInt();
         int sum = 0;
 
-        for (int i = first; i <= second; i++) {
+        int max = Math.max(first, second);
+        int min = Math.min(first, second);
+
+        for (int i = min; i <= max; i++) {
             sum += i;
         }
         
