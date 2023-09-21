@@ -1,11 +1,15 @@
 package leetcode.validAnagram;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 public class Solution {
 
-    public boolean isAnagram(String s, String t) {
+    public static void main(String[] args) {
+        System.out.println(isAnagram("tea", "ate")); //true
+        System.out.println(isAnagram2("ta", "ate")); //false
+    }
+
+    public static boolean isAnagram(String s, String t) {
 //        check for length of strings for a start
         if (s.length() != t.length()) return false;
 //        we could use hashmap to count occurrence
@@ -26,7 +30,7 @@ public class Solution {
         return true;
     }
 
-    public boolean isAnagram2(String s, String t) {
+    public static boolean isAnagram2(String s, String t) {
         return sortString(s).equals(sortString(t));
     }
 
