@@ -15,7 +15,7 @@ public class InputRoulette {
         Scanner input = new Scanner(System.in);
 
 //        Get user input
-        System.out.println("Welcome to the Input Roulette\nEnter two inputs of the same data type and choose a function to apply to them.\nGoodluck!");
+        System.out.println("Welcome to the Input Roulette\nEnter two values and choose a function to apply to them.\nGoodluck!");
         System.out.print("Enter First Input: ");
         String input1 = input.nextLine();
         System.out.print("Enter Second Input: ");
@@ -33,8 +33,18 @@ public class InputRoulette {
 
 //        apply function based on user's selection
         ArithmeticFunction function = functions[selection - 1];
-        function.apply(input1, input2);
 
+        try {
+//        convert input to integers
+            function.apply(Integer.parseInt(input1), Integer.parseInt(input2));
+//        convert input to Double
+            function.apply(Double.parseDouble(input1), Double.parseDouble(input2));
+        } catch (NumberFormatException e) {
+            System.out.println("Ooops! you get to miss out on the real math");
+        }
+
+//        use input as strings
+        function.apply(input1, input2);
         input.close();
     }
 
