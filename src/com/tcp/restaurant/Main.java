@@ -89,13 +89,12 @@ public class Main {
 
 //                    register order
                 int[] order = {mealCourseChoice - 1, mealChoice - 1};
-                int orderCount = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
-                ordersList.put(order, orderCount);
+                int quantity = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
+                ordersList.put(order, quantity);
                 System.out.println("-----------------------------------------------------");
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-                System.out.println("We will order on your behalf and you will pay for it :(");
+                System.out.println("We will order on your behalf and you will pay for it :(\n");
                 //        order from restaurant: 20 random orders
                 restaurant.order(generateMaxOrder(menu));
                 return;
@@ -104,7 +103,6 @@ public class Main {
 
         if (orders == MAX_ORDERS) {
             restaurant.order(ordersList);
-            System.out.println("Thanks for trusting us with your belly!\nYou are one of the great ones");
         }
 
     }
@@ -139,8 +137,8 @@ public class Main {
 //            add meal-course index and meal index to order
             int[] order = {mealCourseChoice, mealChoice};
 
-            int orderCount = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
-            ordersList.put(order, orderCount);
+            int quantity = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
+            ordersList.put(order, quantity);
             orders++;
         }
 
