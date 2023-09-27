@@ -34,18 +34,19 @@ public class Restaurant {
         return pricing[mealCourse];
     }
 
-    public void order(HashMap<int[], Integer> ordersList) {
+    public void order(HashMap<String, Integer> ordersList) {
         System.out.println("You ordered we Answered");
         Date today = new Date();
         StringBuilder receipt = new StringBuilder("Your receipt for today: " + today + "\n\n");
         double totalCost = 0.0;
 
 //        Calculate total cost
-        for (Map.Entry<int[],Integer> mapElement : ordersList.entrySet()) {
-            int[] order = mapElement.getKey();
+        for (Map.Entry<String, Integer> mapElement : ordersList.entrySet()) {
+            String[] order = mapElement.getKey().split(" ");
             int quantity = mapElement.getValue();
 
-            double price = pricing[order[0]] * quantity;
+            int mealCourseChoice = Integer.parseInt(order[0]);
+            double price = pricing[mealCourseChoice] * quantity;
             totalCost += price;
         }
 
@@ -54,12 +55,14 @@ public class Restaurant {
         receipt.append(String.format("%-35s %-12s %-8s %% of sale\n", "Item", "Quantity", "Price"));
         receipt.append("------------------------------------------------------------------------\n");
 
-        for (Map.Entry<int[],Integer> mapElement : ordersList.entrySet()) {
-            int[] order = mapElement.getKey();
+        for (Map.Entry<String, Integer> mapElement : ordersList.entrySet()) {
+            String[] order = mapElement.getKey().split(" ");
             int quantity = mapElement.getValue();
 
-            String meal = menu[order[0]][order[1]];
-            double price = pricing[order[0]] * quantity;
+            int mealCourseChoice = Integer.parseInt(order[0]);
+            int mealChoice = Integer.parseInt(order[1]);
+            String meal = menu[mealCourseChoice][mealChoice];
+            double price = pricing[mealCourseChoice] * quantity;
             Double percentageOfSale = (price/totalCost) * 100;
 
             receipt.append(String.format("%-35s %-12s %-8.2f %.2f%%\n", meal, quantity, price, percentageOfSale));

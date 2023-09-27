@@ -30,6 +30,8 @@ public class Main {
     };
 
     final static int MAX_ORDERS = 20;
+
+//        assuming that all mealCourses have equal length of meals
     final static int MEAL_COUNT = 5;
 
     public static void main(String[] args) {
@@ -41,12 +43,12 @@ public class Main {
 
 //        Start restaurant order prompt
         int orders = 0;
-        HashMap<int[], Integer> ordersList = new HashMap<>();
+        HashMap<String, Integer> ordersList = new HashMap<>();
 
 //        Prepare to collect user input
         Scanner input = new Scanner(System.in);
         while (orders < MAX_ORDERS) {
-            System.out.println("For Appetizers Press 1\nFor Entrees Press 2\nFor Deserts Press 3\nTo Order Press 4\nTo Quit Press Any Other Key\n");
+            System.out.println("For Appetizers Press 1\nFor Entrees Press 2\nFor Deserts Press 3\nTo Order Press 4\nTo Quit Press Any Other Number\n");
 
             System.out.print("Enter Number: ");
 
@@ -88,7 +90,7 @@ public class Main {
                 System.out.println("\n" + mealCount + " " + mealSelected + " cooking...");
 
 //                    register order
-                int[] order = {mealCourseChoice - 1, mealChoice - 1};
+                String order = (mealCourseChoice - 1) + " " + (mealChoice - 1);
                 int quantity = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
                 ordersList.put(order, quantity);
                 System.out.println("-----------------------------------------------------");
@@ -119,25 +121,23 @@ public class Main {
         System.out.print("Enter number: ");
     }
 
-    static HashMap<int[], Integer> generateMaxOrder(String[][] menu) {
+    static HashMap<String, Integer> generateMaxOrder(String[][] menu) {
         int orders = 0;
-        HashMap<int[], Integer> ordersList = new HashMap<>();
+        HashMap<String, Integer> ordersList = new HashMap<>();
 
         int mealCoursesCount = menu.length;
-//        assuming that all mealCourses have equal length of meals
-        int mealCount = menu[0].length;
 
         while (orders < MAX_ORDERS) {
 //            randomly generate meal course index (0: appetizers, 1: entrees, 2: deserts)
             int mealCourseChoice = (int) (Math.random() * mealCoursesCount);
 
 //            randomly generate meal index
-            int mealChoice = (int) (Math.random() * mealCount);
+            int mealChoice = (int) (Math.random() * MEAL_COUNT);
 
 //            add meal-course index and meal index to order
-            int[] order = {mealCourseChoice, mealChoice};
+            String order = mealCourseChoice + " " + mealChoice;
 
-            int quantity = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
+            int quantity = ordersList.get(order) == null ? 1 : ordersList.get(order) + 1;
             ordersList.put(order, quantity);
             orders++;
         }
