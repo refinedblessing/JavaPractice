@@ -29,10 +29,14 @@ public class Main {
             "Creme Brulee"
     };
 
-    final static int MAX_ORDERS = 20;
+//    This can be easily updated
+    final static int MAX_MEALS_PER_ORDER = 1;
+    final static int MAX_ORDERS_PER_SESSION = 5;
 
 //        assuming that all mealCourses have equal length of meals
-    final static int MEAL_COUNT = 5;
+    final static int NO_OF_MEALS_PER_COURSE = 5;
+
+    final static int NO_OF_COURSES = 3;
 
     public static void main(String[] args) {
 //        create a menu with 3 different rows representing 3 food groups
@@ -42,75 +46,85 @@ public class Main {
         Restaurant restaurant = new Restaurant(menu);
 
 //        Start restaurant order prompt
-        int orders = 0;
-        HashMap<String, Integer> ordersList = new HashMap<>();
-
 //        Prepare to collect user input
         Scanner input = new Scanner(System.in);
-        while (orders < MAX_ORDERS) {
-            System.out.println("For Appetizers Press 1\nFor Entrees Press 2\nFor Deserts Press 3\nTo Order Press 4\nTo Quit Press Any Other Number\n");
 
-            System.out.print("Enter Number: ");
+        int totalOrders = 0;
 
-            try {
-                int mealCourseChoice = input.nextInt();
-                int mealChoice = 1;
+//        open drive through for the day, limited to max orders per session
+        while (totalOrders <= MAX_ORDERS_PER_SESSION) {
+            int mealsOrdered = 0;
+            HashMap<String, Integer> mealsOrderedList = new HashMap<>();
 
-                switch (mealCourseChoice) {
-                    case 1:
-                        printMealChoices(0, menu);
-                        break;
-                    case 2:
-                        printMealChoices(1, menu);
-                        break;
-                    case 3:
-                        printMealChoices(2, menu);
-                        break;
-                    case 4:
-                        if (ordersList.size() > 0)
-                            restaurant.order(ordersList);
-                        else System.out.println("You ordered Nothing!");
-                        return;
+//            start taking orders but limit to the max meal per order
+            selectMeal:
+            while (mealsOrdered < MAX_MEALS_PER_ORDER) {
+                try {
+//                    Ask user for meal course preference
+                    System.out.println("For Appetizers Press 1\nFor Entrees Press 2\nFor Deserts Press 3\nTo Order Press 4\nTo Quit Press Any Other Number");
+                    System.out.print("Enter Number: ");
+                    int mealCourseChoice = input.nextInt();
+
+//                   set a default meal choice to be used if user enters incorrect meal choice value
+                    int mealChoice = 1;
+
+                    switch (mealCourseChoice) {
+                        case 1 -> printMealChoices(0, menu);
+                        case 2 -> printMealChoices(1, menu);
+                        case 3 -> printMealChoices(2, menu);
+                        case 4 -> {
+                            if (mealsOrderedList.size() > 0) {
+                                restaurant.order(mealsOrderedList);
+                            }
+                            else System.out.println("You ordered Nothing!\n");
+                            break selectMeal;
+                        }
 //                        for when user quits
-                    default:
-                        System.out.println("Thanks for Stopping By :)");
-                        return;
+                        default -> {
+                            System.out.println("Thanks for Stopping By :)");
+                            break selectMeal;
+                        }
+                    }
+
+//                Get user meal preference
+                    int entry = input.nextInt();
+
+                    if (entry <= NO_OF_MEALS_PER_COURSE) {
+                        mealChoice = entry;
+                    }
+
+                    String mealSelected = menu[mealCourseChoice - 1][mealChoice - 1];
+                    System.out.println(mealSelected + " was selected.");
+
+                    System.out.print("How many " + mealSelected + " do you want? ");
+
+//                enforcing the max meal restriction
+                    int mealCount = Math.min(input.nextInt(), (MAX_MEALS_PER_ORDER - mealsOrdered));
+//                update the count of ordered meals
+                    mealsOrdered += mealCount;
+
+//                    register meal in the mealsOrderedList
+                    String order = (mealCourseChoice - 1) + " " + (mealChoice - 1);
+                    int quantity = mealsOrderedList.get(order) == null ? mealCount : mealsOrderedList.get(order) + mealCount;
+                    mealsOrderedList.put(order, quantity);
+                    System.out.println("-----------------------------------------------------");
+
+                } catch (Exception e) {
+//                A quick way to order 20 meals fast
+                    System.out.println("We will order on your behalf and you will pay for it :(\n");
+                    //        order from restaurant: 20 random orders
+                    restaurant.order(generateMaxOrder());
                 }
-
-                int entry = input.nextInt();
-                if (entry <= MEAL_COUNT) {
-                    mealChoice = entry;
-                }
-
-                String mealSelected = menu[mealCourseChoice - 1][mealChoice - 1];
-                System.out.println(mealSelected + " was selected.");
-                System.out.print("How many of this meal do you want? ");
-                int mealCount = Math.min(input.nextInt(), (MAX_ORDERS - orders));
-                orders += mealCount;
-                System.out.println("\n" + mealCount + " " + mealSelected + " cooking...");
-
-//                    register order
-                String order = (mealCourseChoice - 1) + " " + (mealChoice - 1);
-                int quantity = ordersList.get(order) == null ? mealCount : ordersList.get(order) + mealCount;
-                ordersList.put(order, quantity);
-                System.out.println("-----------------------------------------------------");
-
-            } catch (Exception e) {
-                System.out.println("We will order on your behalf and you will pay for it :(\n");
-                //        order from restaurant: 20 random orders
-                restaurant.order(generateMaxOrder(menu));
-                return;
             }
+
+            if (mealsOrderedList.size() > 0) {
+                restaurant.order(mealsOrderedList);
+            }
+
+            totalOrders++;
         }
 
-        if (orders == MAX_ORDERS) {
-            restaurant.order(ordersList);
-        }
-
-    }
-
-    static void generateReceipt(int[][] orderList, String[][] menu) {
-
+        restaurant.printOrderRegister();
     }
 
     static void printMealChoices(int mealCourse, String[][] menu) {
@@ -121,18 +135,16 @@ public class Main {
         System.out.print("Enter number: ");
     }
 
-    static HashMap<String, Integer> generateMaxOrder(String[][] menu) {
+    static HashMap<String, Integer> generateMaxOrder() {
         int orders = 0;
         HashMap<String, Integer> ordersList = new HashMap<>();
 
-        int mealCoursesCount = menu.length;
-
-        while (orders < MAX_ORDERS) {
+        while (orders < MAX_MEALS_PER_ORDER) {
 //            randomly generate meal course index (0: appetizers, 1: entrees, 2: deserts)
-            int mealCourseChoice = (int) (Math.random() * mealCoursesCount);
+            int mealCourseChoice = (int) (Math.random() * NO_OF_COURSES);
 
 //            randomly generate meal index
-            int mealChoice = (int) (Math.random() * MEAL_COUNT);
+            int mealChoice = (int) (Math.random() * NO_OF_MEALS_PER_COURSE);
 
 //            add meal-course index and meal index to order
             String order = mealCourseChoice + " " + mealChoice;
