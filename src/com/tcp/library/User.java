@@ -13,6 +13,7 @@ public class User {
     public User(String name, int age) {
         this.name = name;
         this.age = age;
+        this.uid = name + age;
     }
 
     public User(String name, String address, String libraryID, int age, ArrayList<String> favoriteGenres) {
@@ -39,7 +40,6 @@ public class User {
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
-                ", uid='" + uid + '\'' +
                 ", address='" + address + '\'' +
                 ", libraryID='" + libraryID + '\'' +
                 ", age=" + age +

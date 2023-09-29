@@ -36,7 +36,7 @@ public class Book {
         return "Book{" +
                 "ISBN='" + ISBN + '\'' +
                 ", title='" + title + '\'' +
-                ", author=" + author +
+                ", author=" + author.name +
                 ", genre='" + genre + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 '}';
