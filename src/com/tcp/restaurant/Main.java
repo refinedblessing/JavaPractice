@@ -31,7 +31,7 @@ public class Main {
 
 //    This can be easily updated
     final static int MAX_MEALS_PER_ORDER = 1;
-    final static int MAX_ORDERS_PER_SESSION = 5;
+    final static int MAX_ORDERS_PER_SESSION = 20;
 
 //        assuming that all mealCourses have equal length of meals
     final static int NO_OF_MEALS_PER_COURSE = 5;
